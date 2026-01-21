@@ -1,19 +1,17 @@
+
 import { GoogleGenAI } from "@google/genai";
 import { Message } from "../types";
 
 export const sendMessageToGemini = async (prompt: string, history: Message[]) => {
-  /**
-   * ==============================================================================
-   * ИСПРАВЛЕНИЕ ОШИБКИ:
-   * ==============================================================================
-   * Ошибка возникала из-за того, что ключ был вставлен без кавычек и воспринимался
-   * как набор переменных и математическая операция (минус).
-   * 
-   * Согласно правилам, мы используем [process.env.API_KEY]. 
-   * Ключ автоматически подставляется в эту переменную из настроек среды.
-   * ==============================================================================
-   */
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Ключ берется из окружения (автоматически подставляется при хостинге)
+  const apiKey = process.env.API_KEY;
+
+  if (!apiKey) {
+    console.error("Gemini API Key is missing.");
+    return "Error: API key is not configured in the environment.";
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   const contents = history.map(msg => ({
     role: (msg.role === 'user' ? 'user' : 'model') as 'user' | 'model',
@@ -36,8 +34,8 @@ export const sendMessageToGemini = async (prompt: string, history: Message[]) =>
     });
 
     return response.text || "I'm sorry, I couldn't generate a response.";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini API Error:", error);
-    return "An error occurred while connecting to CeloraAI. Please try again.";
+    return `Error: ${error.message || "Unable to get response from CeloraAI"}`;
   }
 };

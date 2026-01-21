@@ -1,9 +1,7 @@
-
 import React, { useState } from 'react';
 import { User, Theme, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
-// To use Firebase, uncomment the lines below and ensure your config in services/firebase.ts is correct
-// import { auth, googleProvider, appleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '../services/firebase';
+import { auth, googleProvider, appleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '../services/firebase';
 
 interface AuthProps {
   onLogin: (user: User) => void;
@@ -24,11 +22,6 @@ const Auth: React.FC<AuthProps> = ({ onLogin, theme, language }) => {
     setLoading(true);
     
     try {
-      /**
-       * FIREBASE EMAIL AUTHENTICATION:
-       * When you are ready to use Firebase, uncomment the logic below.
-       */
-      /*
       if (isRegister) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         onLogin({ email: userCredential.user.email!, name: name || email.split('@')[0] });
@@ -36,10 +29,6 @@ const Auth: React.FC<AuthProps> = ({ onLogin, theme, language }) => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         onLogin({ email: userCredential.user.email!, name: userCredential.user.displayName || email.split('@')[0] });
       }
-      */
-      
-      // Mock login for now
-      onLogin({ email, name: name || email.split('@')[0] });
     } catch (error: any) {
       console.error("Auth error:", error.message);
       alert(error.message);
@@ -51,19 +40,24 @@ const Auth: React.FC<AuthProps> = ({ onLogin, theme, language }) => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      /**
-       * FIREBASE GOOGLE AUTHENTICATION:
-       * When you are ready to use Firebase, uncomment the logic below.
-       */
-      /*
       const result = await signInWithPopup(auth, googleProvider);
       onLogin({ email: result.user.email!, name: result.user.displayName || 'Google User' });
-      */
-      
-      // Mock login for now
-      onLogin({ email: 'google-user@example.com', name: 'Google User' });
     } catch (error: any) {
       console.error("Google login error:", error.message);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, appleProvider);
+      onLogin({ email: result.user.email!, name: result.user.displayName || 'Apple User' });
+    } catch (error: any) {
+      console.error("Apple login error:", error.message);
+      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -134,6 +128,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin, theme, language }) => {
             <span className="font-bold text-xs uppercase tracking-tight">{t.continueWithGoogle}</span>
           </button>
           <button 
+            onClick={handleAppleLogin}
             disabled={loading}
             className={`w-full flex items-center justify-center space-x-3 py-4 px-4 rounded-2xl border transition-all active:scale-95 ${isDark ? 'bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50'}`}
           >

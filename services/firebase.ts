@@ -1,21 +1,23 @@
-
 // Firebase configuration and initialization
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, AppleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  OAuthProvider, 
+  signInWithPopup, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-/**
- * FIREBASE CONFIGURATION MARKER:
- * Replace the values below with your actual project's configuration from the Firebase Console.
- */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAlBehjAAXNqrEWufBEHARQXqbRYh5hyKI",
+  authDomain: "ai-assistant-6939a.firebaseapp.com",
+  projectId: "ai-assistant-6939a",
+  storageBucket: "ai-assistant-6939a.firebasestorage.app",
+  messagingSenderId: "515419380278",
+  appId: "1:515419380278:web:308f67852fe824ec25d697",
+  measurementId: "G-7K35ZLDGT3"
 };
 
 // Initialize Firebase
@@ -23,9 +25,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// Auth Providers
+// Providers
 export const googleProvider = new GoogleAuthProvider();
-export const appleProvider = new AppleAuthProvider();
+// Use OAuthProvider for Apple to avoid potential missing export issues with AppleAuthProvider
+export const appleProvider = new OAuthProvider('apple.com');
 
-// Export auth methods for use in components
 export { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword };
